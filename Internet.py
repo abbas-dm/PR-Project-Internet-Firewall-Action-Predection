@@ -1,3 +1,14 @@
+"""
+*Pattern Recognition Project.
+*Title :: Internet Firewall Action Prediction
+*Team Members : 
+*    D Mabu Jaheer Abbas - Analyzing the features and training the model to get good performance on test data
+*    Yaswant Kande - Analyzing the data by pre-proccessed and Cleaning of dataset if needed and finding neccesary features for classification
+*    Pattem Gaurav Naga Maheswar - Getting Dataset and some references to understand type of classificaion and basic analysis on data
+*
+*Dataset Source :: 'https://archive.ics.uci.edu/ml/datasets/Internet+Firewall+Data'
+"""
+
 import pandas as pd
 from pandas.plotting import scatter_matrix
 import numpy as np
@@ -28,9 +39,6 @@ print(df.Action.value_counts(normalize=True))
 
 sns.countplot(df['Action'],label="Count")
 plt.savefig('Action_Count.png')
-
-
-
 
 num_features = ['Bytes', 'Bytes Sent', 'Bytes Received', 'Packets', 'Elapsed Time (sec)', 'pkts_sent', 'pkts_received']
 
@@ -142,4 +150,52 @@ axs[1,1].set_ylabel(yy)
 axs[1,1].grid()
 
 plt.savefig(xx+'_'+yy)
-#----------------------------------------------------------------------------
+
+#Creating the dependent variable class
+factor = pd.factorize(df['Action'])
+df.Action = factor[0]
+definitions = factor[1]
+print(df.Action.head())
+print(definitions)
+
+features = ['Source Port', 'Destination Port', 'NAT Source Port', 'NAT Destination Port', 'Bytes', 'Bytes Sent', 'Bytes Received', 'Packets', 'Elapsed Time (sec)', 'pkts_sent', 'pkts_received']
+X = df[features]
+y = df['Action']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 21)
+
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Fitting Random Forest Classification to the Training set
+classifier = RandomForestClassifier(n_estimators = 10, criterion = 'entropy', random_state = 42)
+classifier.fit(X_train, y_train)
+
+# Predicting the Test set results
+y_pred = classifier.predict(X_test)
+
+#Reverse factorize (converting y_pred from 0s,1s and 2s to Iris-setosa, Iris-versicolor and Iris-virginica
+reversefactor = dict(zip(range(3),definitions))
+y_test = np.vectorize(reversefactor.get)(y_test)
+y_pred = np.vectorize(reversefactor.get)(y_pred)
+
+# Making the Confusion Matrix
+confusion = pd.crosstab(y_test, y_pred, rownames=['Actual Actions'], colnames=['Predicted Actions'])
+plt.figure(figsize=(12,5))
+sns.heatmap(confusion, annot=True, fmt='d', cmap='Blues', linecolor='black', linewidths=0.1)
+plt.savefig('ConfusionMat.png')
+
+# finding accuracy percentage
+Con_mat = np.sum(confusion)
+predictions = ['Allow', 'Drop', 'Deny', 'None']
+Con_pred = np.sum(Con_mat[predictions])
+Con_correct = confusion['Allow']['Allow'] + confusion['Drop']['Drop'] + confusion['Deny']['Deny'] + confusion['None']['None']
+accuracy = (Con_correct/Con_pred)*100
+
+plt.show()
+
+print()
+print('|------------------------------------------------------------|')
+print(' Accuracy Percentage for test data is :: '+str(accuracy)+'%')
+print('|------------------------------------------------------------|')
+print()
