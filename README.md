@@ -25,38 +25,3 @@
 
 ### The fundamental concept behind random forest is a simple but powerful one — the wisdom of crowds. In data science speak, the reason that the random forest model works so well is:
 ## 'A large number of relatively uncorrelated models (trees) operating as a committee will outperform any of the individual constituent models.'
-# Implementation
-#### First, we tried to read .csv data-set file, and understood the basic information like shape, info (to find any missing vale is present or not).
-#### As the data do not have any type of missing values, we need not to fill any of the places in data-set.
-#### As we know that Action is the target attribute, we found no. of unique values in that Action attribute and plotted the count of each unique Action.
-
-<p align = "center">
-  <img src="https://user-images.githubusercontent.com/56586584/144799603-a38ae499-2bfd-479f-8722-af940f023a81.png" alt="Action Count">
-</p>
-
-#### After this we divided the data-set into two part, they are ‘num_features’, ‘cat_features’ and understood the spread of values for each attribute.
-    Cat_features – [‘Source Port’, ‘Destination Port’, ‘NAT Source Port’, ‘NAT Destination Port’]
-    Num_features – All remaining attributes
-#### And also, we have done plotting between the Source Port and Destination Port for each Action.
-#### Similarly, we also done the plotting between NAT Source Port and NAT Destination Port.
-
-![S_vs_D](https://user-images.githubusercontent.com/56586584/144800046-5e06e2c6-ccb7-4721-8ce5-78da17f94a9f.png)
-![NS_vs_ND](https://user-images.githubusercontent.com/56586584/144800060-7fdd628d-0791-48c4-ae83-445b1b70c3b6.png)
-
-#### Now, we again divided whole data-set into four part,
-    X_train - data used to train the model.
-    Y_train - Action values used for training model.
-    X_test - data used for testing of model.
-    Y_test - Action values for comparing with y_pred.
-#### As this is multi-class problem we have used Random Forest Classifier to classify and predict the values (to get high accuracy).
-#### After training and testing we have plotted the confusion matrix i.e., between Actual Actions and Predicted Actions.
-#### From this confusion matrix we have calculated the accuracy percentage,
-    Accuracy percentage we have acquired is – 99.78
-    
-<p align = "center">
-  <img src="https://user-images.githubusercontent.com/56586584/144800332-8ef55f70-6b95-4c0f-b33a-cf620296ab76.png" alt="Confusion_PR">
-</p>
-
-# References
-#### https://towardsdatascience.com/solving-a-simple-classification-problem-with-python-fruits-lovers-edition-d20ab6b071d2
-#### https://stackabuse.com/random-forest-algorithm-with-python-and-scikit-learn/
